@@ -2,10 +2,6 @@ const jwt = require('jsonwebtoken')
 
 const db = require('./db')
 
-database={
-    1000:{userid:1000,username:"aswin",psw:1000}
-  }
-
   const register = (userid,username,psw)=>{
       return db.User.findOne({userid})
       .then(user=>{
@@ -21,7 +17,7 @@ database={
             userid,
             username,
             psw,
-            event:[]
+            eventDet:[]
           })
           newUser.save()
           return{
@@ -67,9 +63,9 @@ database={
        return db.User.findOne({userid})
        .then(user=>{
           if(user){
-              user.event.push({
+              user.eventDet.push({
                 date:date,
-                event:event
+                events:event
               })
               user.save()
               return{
@@ -95,7 +91,7 @@ database={
           return{
             statusCode:200,
             status:true,
-            event:user.event
+            eventDet:user.eventDet
           }
         }
         else{
@@ -107,10 +103,62 @@ database={
         }
       })
    }
+
+  const deleteEvent = (event,userid)=>{
+    return db.User.updateOne({"userid":userid},{$pull:{eventDet:{events:event}}})
+    .then(result=>{
+      if(!result){
+          return {
+            statusCode:422,
+            status:false,
+            message:"Failed to add"
+        }
+      }
+      else{
+       return {
+          statusCode:200,
+          status:true,
+          message:"deleted one row"
+        }
+      }
+    })
+  
+  }
+
+  const updateEvent = (uid,indexNum,edate,eventd)=>{
+    
+    return db.User.findOne({uid})
+    .then(user=>{
+      if(!user){
+        return {
+          statusCode:422,
+          status:false,
+          message:"Failed to add"
+        }
+      }
+      else{
+        if(user.eventDet[indexNum]["date"]!=edate && edate!=""){
+          user.eventDet[indexNum].date=edate
+        }
+        if(user.eventDet[indexNum]["events"]!=eventd && eventd!=""){
+           user.eventDet[indexNum].events=eventd
+        }
+        user.markModified('eventDet')
+        user.save()
+        return{
+          statusCode:200,
+          status:true,
+          message:"updated"
+        }
+      }
+    })
+  }
    
 module.exports={
       register,
       login,
       addEvent,
-      showEvent
+      showEvent,
+      deleteEvent,
+      updateEvent
   }

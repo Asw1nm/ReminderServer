@@ -8,6 +8,7 @@ const app = express()
 
 
 const cors = require('cors')
+const res = require('express/lib/response')
 
 app.use(cors({
     origin:'http://localhost:4200'
@@ -55,6 +56,20 @@ app.post('/dashboard',jwtMiddleware,(req,res)=>{
 
 app.post('/events',jwtMiddleware,(req,res)=>{
     return dataService.showEvent(req.body.userid)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+})
+
+app.post('/deleteEvent',jwtMiddleware,(req,res)=>{
+    return dataService.deleteEvent(req.body.event,req.body.userid)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+})
+
+app.post('/updateEvent',jwtMiddleware,(req,res)=>{
+    return dataService.updateEvent(req.body.uid,req.body.indexNum,req.body.edate,req.body.eventd)
     .then(result=>{
         res.status(result.statusCode).json(result)
     })

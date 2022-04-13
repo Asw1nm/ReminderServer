@@ -8,7 +8,7 @@ const User = mongoose.model('User',{
     userid:Number,
     username:String,
     psw:String,
-    event:[]
+    eventDet:[]
 })
 
 module.exports={
