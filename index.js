@@ -8,7 +8,7 @@ const app = express()
 
 
 const cors = require('cors')
-const res = require('express/lib/response')
+
 
 app.use(cors({
     origin:'http://localhost:4200'
@@ -72,6 +72,12 @@ app.post('/updateEvent',jwtMiddleware,(req,res)=>{
     return dataService.updateEvent(req.body.uid,req.body.indexNum,req.body.edate,req.body.eventd)
     .then(result=>{
         res.status(result.statusCode).json(result)
+    })
+})
+
+app.post('/getNoti',(req,res) => {
+    return dataService.getNotification().then(result =>{
+        res.status(result)
     })
 })
 
